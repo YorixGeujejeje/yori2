@@ -2,47 +2,62 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Para Yori 💜</title>
+<meta charset="UTF-8">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<title>Para Yori 💜</title>
 
-    <link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
 
-    <!-- Audio -->
-    <audio id="waves" loop>
-        <source src="assets/audio/waves.mp3" type="audio/mpeg">
-    </audio>
+<audio id="waves" loop>
+    <source src="assets/audio/waves.mp3" type="audio/mpeg">
+</audio>
 
-    <!-- Pantalla principal -->
-    <div id="intro">
+<!-- INTRO -->
+
+<section id="intro">
+
+    <div class="card">
 
         <h1>Para Yori.</h1>
 
         <p>
-            Hay algo que llevo muchísimo tiempo queriéndote decir.
+
+        Hay algo que llevo muchísimo tiempo queriéndote decir.
+
         </p>
 
         <button id="start">
-            Comenzar
-        </button>
 
-        <!-- Historia -->
-        <div id="story" class="hidden">
-            <p id="storyText"></p>
-        </div>
+        Comenzar
+
+        </button>
 
     </div>
 
-    <script src="script.js"></script>
+</section>
+
+<!-- HISTORIA -->
+
+<section id="storyScreen">
+
+    <p id="storyText"></p>
+
+</section>
+
+<script src="script.js"></script>
 
 </body>
 
