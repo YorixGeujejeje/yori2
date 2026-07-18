@@ -1,3 +1,5 @@
+alert("JavaScript cargó");
+
 const start=document.getElementById("start");
 
 const intro=document.getElementById("intro");
