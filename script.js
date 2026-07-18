@@ -1,10 +1,14 @@
-const start = document.getElementById("start");
-const intro = document.getElementById("intro");
-const storyScreen = document.getElementById("storyScreen");
-const storyText = document.getElementById("storyText");
-const waves = document.getElementById("waves");
+const start=document.getElementById("start");
 
-const frases = [
+const intro=document.getElementById("intro");
+
+const story=document.getElementById("storyScreen");
+
+const text=document.getElementById("storyText");
+
+const waves=document.getElementById("waves");
+
+const frases=[
 
 "Siempre me ha encantado el mar...",
 
@@ -18,98 +22,146 @@ const frases = [
 
 "Cada playa comenzó a recordarme a ti.",
 
-"Y desde entonces...",
+"Cada vez que veo un atardecer...",
 
-"Cada atardecer sobre el océano termina llevándome hasta tu recuerdo."
+"Pienso en ti.",
+
+"Yori...",
+
+"Hay algo que llevo muchísimo tiempo queriéndote preguntar."
 
 ];
 
-start.addEventListener("click", iniciarHistoria);
+start.onclick=()=>{
 
-function iniciarHistoria(){
+waves.play().catch(()=>{});
 
-    waves.play().catch(()=>{});
+intro.classList.add("hide");
 
-    intro.classList.add("hide");
+setTimeout(()=>{
 
-    setTimeout(()=>{
+intro.style.display="none";
 
-        intro.style.display="none";
+story.classList.add("show");
 
-        storyScreen.classList.add("show");
+historia(0);
 
-        mostrarFrase(0);
-
-    },1000);
+},1000);
 
 }
 
-function mostrarFrase(indice){
+async function historia(i){
 
-    if(indice>=frases.length){
+if(i>=frases.length){
 
-        return;
+pregunta();
 
-    }
-
-    escribir(frases[indice],()=>{
-
-        setTimeout(()=>{
-
-            desaparecer(()=>{
-
-                mostrarFrase(indice+1);
-
-            });
-
-        },2500);
-
-    });
+return;
 
 }
 
-function escribir(texto,fin){
+await escribir(frases[i]);
 
-    storyText.style.opacity=1;
+await esperar(2200);
 
-    storyText.innerHTML="";
+await desaparecer();
 
-    let i=0;
-
-    const velocidad=45;
-
-    const maquina=setInterval(()=>{
-
-        storyText.innerHTML+=texto.charAt(i);
-
-        i++;
-
-        if(i>=texto.length){
-
-            clearInterval(maquina);
-
-            fin();
-
-        }
-
-    },velocidad);
+historia(i+1);
 
 }
 
-function desaparecer(fin){
+function escribir(frase){
 
-    storyText.style.transition="opacity .8s";
+return new Promise(resolve=>{
 
-    storyText.style.opacity=0;
+let i=0;
 
-    setTimeout(()=>{
+text.innerHTML="";
 
-        storyText.innerHTML="";
+const cursor='<span class="cursor"></span>';
 
-        storyText.style.opacity=1;
+const escribir=setInterval(()=>{
 
-        fin();
+text.innerHTML=frase.substring(0,i)+cursor;
 
-    },800);
+i++;
+
+if(i>frase.length){
+
+clearInterval(escribir);
+
+text.innerHTML=frase;
+
+resolve();
+
+}
+
+},45);
+
+});
+
+}
+
+function desaparecer(){
+
+return new Promise(resolve=>{
+
+text.animate([
+
+{opacity:1},
+
+{opacity:0}
+
+],{
+
+duration:900,
+
+fill:"forwards"
+
+});
+
+setTimeout(()=>{
+
+text.innerHTML="";
+
+text.style.opacity=1;
+
+resolve();
+
+},900);
+
+});
+
+}
+
+function esperar(ms){
+
+return new Promise(resolve=>setTimeout(resolve,ms));
+
+}
+
+function pregunta(){
+
+text.innerHTML=`
+
+<h1 style="font-size:64px;font-family:'Cormorant Garamond',serif;">Yori...</h1>
+
+<p style="font-size:32px;margin-top:20px;">
+
+¿Me darías otra oportunidad?
+
+</p>
+
+<div style="margin-top:45px;">
+
+<button id="si">Sí 💜</button>
+
+<button id="no" style="margin-left:20px;">No</button>
+
+</div>
+
+`;
+
+iniciarBotonNo();
 
 }
