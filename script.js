@@ -1,20 +1,14 @@
-alert("JavaScript cargó");
+const start = document.getElementById("start");
+const intro = document.getElementById("intro");
+const storyScreen = document.getElementById("storyScreen");
+const storyText = document.getElementById("storyText");
+const waves = document.getElementById("waves");
 
-const start=document.getElementById("start");
-
-const intro=document.getElementById("intro");
-
-const story=document.getElementById("story");
-
-const storyText=document.getElementById("storyText");
-
-const waves=document.getElementById("waves");
-
-const frases=[
+const frases = [
 
 "Siempre me ha encantado el mar...",
 
-"Porque siempre me hizo sentir libre.",
+"Porque siempre me hacía sentir libre.",
 
 "Curiosamente...",
 
@@ -22,72 +16,100 @@ const frases=[
 
 "Y sin darme cuenta...",
 
-"Cada playa comenzó a recordarme a ti."
+"Cada playa comenzó a recordarme a ti.",
+
+"Y desde entonces...",
+
+"Cada atardecer sobre el océano termina llevándome hasta tu recuerdo."
 
 ];
 
-start.onclick=()=>{
+start.addEventListener("click", iniciarHistoria);
 
-waves.play().catch(()=>{});
+function iniciarHistoria(){
 
-start.style.display="none";
+    waves.play().catch(()=>{});
 
-story.classList.remove("hidden");
+    intro.classList.add("hide");
 
-mostrarFrase(0);
+    setTimeout(()=>{
 
-}
+        intro.style.display="none";
 
-function mostrarFrase(i){
+        storyScreen.classList.add("show");
 
-if(i>=frases.length){
+        mostrarFrase(0);
 
-storyText.innerHTML="";
-
-return;
+    },1000);
 
 }
 
-storyText.style.opacity=0;
+function mostrarFrase(indice){
 
-setTimeout(()=>{
+    if(indice>=frases.length){
 
-escribir(frases[i],()=>{
+        return;
 
-storyText.style.opacity=1;
+    }
 
-setTimeout(()=>{
+    escribir(frases[indice],()=>{
 
-mostrarFrase(i+1);
+        setTimeout(()=>{
 
-},2600);
+            desaparecer(()=>{
 
-});
+                mostrarFrase(indice+1);
 
-},700);
+            });
+
+        },2500);
+
+    });
 
 }
 
 function escribir(texto,fin){
 
-storyText.innerHTML="";
+    storyText.style.opacity=1;
 
-let x=0;
+    storyText.innerHTML="";
 
-const intervalo=setInterval(()=>{
+    let i=0;
 
-storyText.innerHTML+=texto.charAt(x);
+    const velocidad=45;
 
-x++;
+    const maquina=setInterval(()=>{
 
-if(x===texto.length){
+        storyText.innerHTML+=texto.charAt(i);
 
-clearInterval(intervalo);
+        i++;
 
-fin();
+        if(i>=texto.length){
+
+            clearInterval(maquina);
+
+            fin();
+
+        }
+
+    },velocidad);
 
 }
 
-},45);
+function desaparecer(fin){
+
+    storyText.style.transition="opacity .8s";
+
+    storyText.style.opacity=0;
+
+    setTimeout(()=>{
+
+        storyText.innerHTML="";
+
+        storyText.style.opacity=1;
+
+        fin();
+
+    },800);
 
 }
