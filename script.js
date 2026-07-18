@@ -1,112 +1,197 @@
-const start=document.getElementById("start");
+// ===============================
+// PARA YORI 💜
+// Motor principal
+// ===============================
 
-const intro=document.getElementById("intro");
+const intro = document.getElementById("intro");
+const start = document.getElementById("start");
 
-const story=document.getElementById("storyScreen");
+const storyScreen = document.getElementById("storyScreen");
+const chapter = document.getElementById("chapter");
+const storyText = document.getElementById("storyText");
 
-const text=document.getElementById("storyText");
+const waves = document.getElementById("waves");
 
-const waves=document.getElementById("waves");
+// ===============================
+// Historia
+// ===============================
 
-const frases=[
+const historia = [
+
+{
+
+capitulo:"I",
+
+titulo:"El mar",
+
+texto:[
 
 "Siempre me ha encantado el mar...",
 
-"Porque siempre me hacía sentir libre.",
+"Porque siempre me hizo sentir libre.",
 
 "Curiosamente...",
 
-"A ti también te encanta el mar.",
+"A ti también te encanta.",
 
-"Y sin darme cuenta...",
+"Y desde entonces...",
 
-"Cada playa comenzó a recordarme a ti.",
+"Cada playa terminó recordándome a ti."
 
-"Cada vez que veo un atardecer...",
+]
 
-"Pienso en ti.",
+},
 
-"Yori...",
+{
 
-"Hay algo que llevo muchísimo tiempo queriéndote preguntar."
+capitulo:"II",
+
+titulo:"Michael Jackson",
+
+texto:[
+
+"Después apareció alguien más.",
+
+"Un hombre que seguramente ya sabes quién es.",
+
+"Michael Jackson.",
+
+"Y curiosamente...",
+
+"Cada vez que lo escucho también termino pensando en ti."
+
+]
+
+}
 
 ];
 
-start.onclick=()=>{
+// ===============================
+
+let capituloActual = 0;
+let fraseActual = 0;
+
+// ===============================
+
+start.addEventListener("click", iniciar);
+
+// ===============================
+
+function iniciar(){
 
 waves.play().catch(()=>{});
 
-intro.classList.add("hide");
+intro.style.opacity="0";
 
 setTimeout(()=>{
 
 intro.style.display="none";
 
-story.classList.add("show");
+storyScreen.style.opacity="1";
 
-historia(0);
+storyScreen.style.pointerEvents="auto";
 
-},1000);
+mostrarCapitulo();
+
+},1200);
 
 }
 
-async function historia(i){
+// ===============================
 
-if(i>=frases.length){
+function mostrarCapitulo(){
 
-pregunta();
+const actual = historia[capituloActual];
+
+chapter.innerHTML = actual.capitulo + "<br>" + actual.titulo;
+
+chapter.style.opacity = 1;
+
+storyText.innerHTML = "";
+
+setTimeout(()=>{
+
+chapter.style.opacity = 0;
+
+setTimeout(()=>{
+
+mostrarFrase();
+
+},900);
+
+},2200);
+
+}
+
+// ===============================
+
+function mostrarFrase(){
+
+const actual = historia[capituloActual];
+
+if(fraseActual >= actual.texto.length){
+
+capituloActual++;
+
+fraseActual=0;
+
+if(capituloActual>=historia.length){
+
+finHistoria();
 
 return;
 
 }
 
-await escribir(frases[i]);
+mostrarCapitulo();
 
-await esperar(2200);
-
-await desaparecer();
-
-historia(i+1);
+return;
 
 }
 
-function escribir(frase){
+escribir(actual.texto[fraseActual]);
 
-return new Promise(resolve=>{
+}
+
+// ===============================
+
+function escribir(texto){
+
+storyText.innerHTML="";
 
 let i=0;
 
-text.innerHTML="";
+const cursor="<span class='cursor'></span>";
 
-const cursor='<span class="cursor"></span>';
+const maquina=setInterval(()=>{
 
-const escribir=setInterval(()=>{
-
-text.innerHTML=frase.substring(0,i)+cursor;
+storyText.innerHTML = texto.substring(0,i)+cursor;
 
 i++;
 
-if(i>frase.length){
+if(i>texto.length){
 
-clearInterval(escribir);
+clearInterval(maquina);
 
-text.innerHTML=frase;
+storyText.innerHTML = texto;
 
-resolve();
+setTimeout(()=>{
+
+desaparecer();
+
+},2400);
+
+}
+
+},42);
 
 }
 
-},45);
-
-});
-
-}
+// ===============================
 
 function desaparecer(){
 
-return new Promise(resolve=>{
-
-text.animate([
+storyText.animate([
 
 {opacity:1},
 
@@ -122,210 +207,26 @@ fill:"forwards"
 
 setTimeout(()=>{
 
-text.innerHTML="";
+storyText.style.opacity=1;
 
-text.style.opacity=1;
+fraseActual++;
 
-resolve();
+mostrarFrase();
 
 },900);
 
-});
-
 }
 
-function esperar(ms){
+// ===============================
 
-return new Promise(resolve=>setTimeout(resolve,ms));
+function finHistoria(){
 
-}
+storyText.innerHTML="";
 
-function pregunta(){
+chapter.innerHTML="";
 
-text.innerHTML=`
+chapter.style.opacity=0;
 
-<h1 style="font-size:64px;font-family:'Cormorant Garamond',serif;">Yori...</h1>
-
-<p style="font-size:32px;margin-top:20px;">
-
-¿Me darías otra oportunidad?
-
-</p>
-
-<div style="margin-top:45px;">
-
-<button id="si">Sí 💜</button>
-
-<button id="no" style="margin-left:20px;">No</button>
-
-</div>
-
-`;
-
-iniciarBotonNo();
-
-}
-
-const mensajesNo = [
-
-"¿Segura? 🥺",
-
-"Buen intento. 😼",
-
-"Las olas votaron por el 'Sí'. 🌊",
-
-"Michael estaría decepcionado de ese clic. 😔",
-
-"Abel escribiría otro álbum si pulsas ese botón. 🎤",
-
-"Ni MJ pudo enseñarme a rendirme. 🕺",
-
-"The Weeknd diría: Don't break my heart. 💔",
-
-"El botón tiene ansiedad... por eso huye.",
-
-"Creo que una estrella acaba de apagarse. ✨",
-
-"¿Y si pruebas el otro botón? 💜"
-
-];
-
-let intentos = 0;
-
-function iniciarBotonNo(){
-
-const no = document.getElementById("no");
-
-const si = document.getElementById("si");
-
-no.addEventListener("mouseenter", mover);
-
-no.addEventListener("click", mover);
-
-si.addEventListener("click", finalFeliz);
-
-}
-
-function mover(e){
-
-const no = e.target;
-
-intentos++;
-
-if(intentos>=8){
-
-no.innerText="Bueno... respeto tu decisión 💜";
-
-no.style.position="static";
-
-no.removeEventListener("mouseenter", mover);
-
-return;
-
-}
-
-const x=Math.random()*(window.innerWidth-170);
-
-const y=Math.random()*(window.innerHeight-80);
-
-no.style.position="fixed";
-
-no.style.left=x+"px";
-
-no.style.top=y+"px";
-
-mostrarMensaje();
-
-}
-
-function mostrarMensaje(){
-
-const viejo=document.getElementById("popup");
-
-if(viejo) viejo.remove();
-
-const div=document.createElement("div");
-
-div.id="popup";
-
-div.innerText=mensajesNo[
-Math.floor(Math.random()*mensajesNo.length)
-];
-
-div.style.position="fixed";
-
-div.style.top="70px";
-
-div.style.left="50%";
-
-div.style.transform="translateX(-50%)";
-
-div.style.background="rgba(0,0,0,.35)";
-
-div.style.padding="14px 24px";
-
-div.style.borderRadius="18px";
-
-div.style.backdropFilter="blur(10px)";
-
-div.style.fontSize="18px";
-
-div.style.opacity="0";
-
-div.style.transition=".4s";
-
-document.body.appendChild(div);
-
-setTimeout(()=>{
-
-div.style.opacity="1";
-
-},20);
-
-setTimeout(()=>{
-
-div.remove();
-
-},2200);
-
-}
-
-function finalFeliz(){
-
-document.body.animate([
-
-{filter:"brightness(1)"},
-
-{filter:"brightness(1.4)"},
-
-{filter:"brightness(1)"}
-
-],{
-
-duration:1800
-
-});
-
-story.innerHTML=`
-
-<h1 style="font-family:'Cormorant Garamond',serif;font-size:68px;">
-
-Gracias...
-
-</h1>
-
-<p style="font-size:30px;margin-top:25px;">
-
-Prometo que esta vez no solo te lo diré.
-
-<br><br>
-
-Voy a demostrártelo.
-
-💜
-
-</p>
-
-`;
+storyText.innerHTML="Continúa...";
 
 }
